@@ -14,14 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import division
-from __future__ import print_function
-from __future__ import with_statement
-from future import standard_library
-standard_library.install_aliases()
-from builtins import str
-from past.utils import old_div
-from builtins import object
 
 import os
 from front import Front, DryRunFront
@@ -120,7 +112,7 @@ class Workdir(object):
         if self.__get_workdir_version() == 2:
             files = os.listdir(self.metadir)
             for fn in files:
-                if re.match("^bloblistcache\d+\.bin$", fn):
+                if re.match("^bloblistcache\\d+\\.bin$", fn):
                     safe_delete_file(os.path.join(self.metadir, fn))
             self.__set_workdir_version(3)
 
@@ -908,9 +900,9 @@ class ChecksumProgressPrinter(object):
         processed_bytes = total_bytes - remaining_bytes
         print((" " * len(self.last_string)) + "\r", end=' ')
         self.last_string = "Scanning: %s files and %s Mb remaining (%s%% complete, %s Mb/s)" % \
-            (remaining_files, int(old_div(remaining_bytes,2**20)), \
-             round(100 * (1.0 - 1.0 * remaining_bytes / total_bytes), 1), \
-             round(old_div((old_div(processed_bytes,2**20)),elapsed_time), 1))
+            (remaining_files, int(remaining_bytes / 2**20),
+             round(100 * (1.0 - 1.0 * remaining_bytes / total_bytes), 1),
+             round(processed_bytes / 2**20 / elapsed_time, 1))
         print(self.last_string + "\r", end=' ')
         sys.stdout.flush()
         self.last_t = now
@@ -971,6 +963,7 @@ class ChecksumCache(object):
         md5, row_md5 = rows[0]
         expected_md5_row = md5sum(path.encode("utf8") + b"!" + str(mtime).encode("utf8") + b"!" + md5.encode("utf8"))
         # TODO: use a nice exception for cache corruption
+        # print(path, row_md5, expected_md5_row)
         assert row_md5 == expected_md5_row, "Workdir cache corrupted"
         return md5
 

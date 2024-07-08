@@ -20,14 +20,10 @@ this interface. Secondly, all arguments and return values are
 primitive values that can be serialized easily, which makes it easy to
 implement an RPC mechanism for this interface.
 """
-from __future__ import division
-from __future__ import print_function
 
 from builtins import str
 from builtins import range
-from past.builtins import basestring
 from builtins import object
-from past.utils import old_div
 from blobrepo import repository
 from boar_exceptions import *
 import sys
@@ -180,7 +176,7 @@ def __clone_single_snapshot(from_front, to_front, session_id):
                 pp = SimpleProgressPrinter(sys.stdout,
                                            label="Sending blob %s of %s (%s MB)" %
                                            (n+1, len(other_raw_bloblist),
-                                            round(old_div(blobinfo['size'], (1.0 * 2**20)), 3)))
+                                            round(blobinfo['size'] / (1.0 * 2**20), 3)))
                 sw = StopWatch(enabled=False, name="front.clone")
                 to_front.init_new_blob(md5sum, blobinfo['size'])
                 sw.mark("front.init_new_blob()")
@@ -412,7 +408,7 @@ class Front(object):
         """Creates a new snapshot for the given session. Commit() must
         be called when the construction of the new snapshot is
         completed()."""
-        assert isinstance(session_name, basestring), session_name
+        assert isinstance(session_name, str), session_name
         assert not self.new_session, "There already exists an active new snapshot"
         self.new_session = self.repo.create_snapshot(session_name = session_name,
                                                      base_session = base_session,

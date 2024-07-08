@@ -21,7 +21,7 @@ from builtins import range
 from builtins import object
 
 from common import *
-from ordered_dict import OrderedDict
+from collections import OrderedDict
 from jsonrpc import FileDataSource
 
 import sys

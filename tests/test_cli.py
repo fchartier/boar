@@ -31,21 +31,12 @@ def call(cmd, check=True, cwd=None):
     """Execute a command and return output and status code. If 'check' is True,
     an exception will be raised if the command exists with an error code. If
     'cwd' is set, the command will execute in that directory."""
-    def localencoding(us):
-        if type(us) == str:
-            if os.name == "nt":
-                return us.encode("mbcs")
-            else:
-                return us.encode("utf8")
-        return us
-    cmd = [localencoding(s) for s in cmd]
-    cwd = localencoding(cwd)
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, cwd=cwd)
     stdout = p.communicate()[0]
     returncode = p.poll()
     if check and returncode != 0:
         raise Exception("Call failed with errorcode %s: %s" % (returncode, stdout))
-    return stdout, returncode
+    return stdout.decode(), returncode
 
 BOAR_HOME = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if __name__ == '__main__':
